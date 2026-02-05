@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Tilt Cat Roller</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hud">
+    <div class="hud__block">
+      <div class="hud__label">Time</div>
+      <div id="time" class="hud__value">0.0s</div>
+    </div>
+    <div class="hud__block hud__block--wide">
+      <div class="hud__label">Dizzy</div>
+      <div class="gauge">
+        <div id="dizzy-bar" class="gauge__bar"></div>
+      </div>
+    </div>
+    <div class="hud__block">
+      <div class="hud__label">State</div>
+      <div id="state" class="hud__value">STAND</div>
+    </div>
+    <button id="restart" class="hud__button" type="button">リスタート</button>
+  </header>
+
+  <main class="game">
+    <canvas id="game" width="360" height="640"></canvas>
+    <div id="overlay" class="overlay">
+      <h1 class="overlay__title">Tilt Cat Roller</h1>
+      <p class="overlay__text">
+        スマホを傾けてネコを転がそう！<br />
+        iOSはセンサー許可が必要です。
+      </p>
+      <button id="enable" class="overlay__button" type="button">センサーを有効にする</button>
+    </div>
+    <div id="clear" class="overlay overlay--hidden">
+      <h2 class="overlay__title">クリア！</h2>
+      <p id="clear-time" class="overlay__text">Time: 0.0s</p>
+      <button id="retry" class="overlay__button" type="button">再挑戦</button>
+    </div>
+  </main>
+
+  <div id="virtual" class="virtual virtual--hidden">
+    <p class="virtual__text">センサーが使えない場合はボタンで操作できます</p>
+    <div class="virtual__row">
+      <button class="virtual__btn" data-dir="up" type="button">▲</button>
+    </div>
+    <div class="virtual__row">
+      <button class="virtual__btn" data-dir="left" type="button">◀︎</button>
+      <button class="virtual__btn" data-dir="down" type="button">▼</button>
+      <button class="virtual__btn" data-dir="right" type="button">▶︎</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
