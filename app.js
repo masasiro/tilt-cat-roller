@@ -21,9 +21,9 @@ const dizzyBarFill = document.getElementById('dizzy-bar-fill');
 const startScreen = document.getElementById('start-screen');
 const gameOverScreen = document.getElementById('game-over-screen');
 const startBtn = document.getElementById('start-btn');
+const btnModeBtn = document.getElementById('btn-mode-btn');
 const restartBtn = document.getElementById('restart-btn');
 const goRestartBtn = document.getElementById('go-restart-btn');
-const pcWarning = document.getElementById('pc-warning');
 const fallbackControls = document.getElementById('fallback-controls');
 const dizzyPopup = document.getElementById('dizzy-popup');
 
@@ -36,7 +36,7 @@ let dizzyPopupTimer = 0;
 
 // Player
 const player = {
-    x: 60,
+    x: 180,
     y: 580,
     vx: 0,
     vy: 0,
@@ -48,30 +48,45 @@ const player = {
     onRough: false
 };
 
-// Map Data
-const goal = { x: 300, y: 60, r: 22 };
+// Map Data - Fun Version
+const goal = { x: 180, y: 140, r: 24 };
+
+// Fun Zig-Zag Map
 const rectWalls = [
-    {x: 90,  y: 520, w: 240, h: 16},
-    {x: 30,  y: 450, w: 220, h: 16},
-    {x: 110, y: 380, w: 220, h: 16},
-    {x: 30,  y: 310, w: 220, h: 16},
-    {x: 110, y: 240, w: 220, h: 16},
-    {x: 30,  y: 170, w: 220, h: 16},
-    {x: 110, y: 100, w: 220, h: 16},
-    {x: 260, y: 430, w: 16,  h: 140},
-    {x: 80,  y: 260, w: 16,  h: 140},
-    {x: 260, y: 90,  w: 16,  h: 140},
+    // Outer Walls (handled by logic, but added here if visual only? No, logic uses strict bounds)
+    // We only define Obstacles here.
+
+    // 1. The Split Block (Center bottom)
+    {x: 140, y: 480, w: 80, h: 20},
+
+    // 2. Slalom Left (From Left Wall)
+    {x: 0,   y: 380, w: 200, h: 20},
+
+    // 3. Slalom Right (From Right Wall)
+    {x: 160, y: 280, w: 200, h: 20},
+
+    // 4. Central Pillar (moved down to not block goal)
+    {x: 160, y: 200, w: 40, h: 40},
 ];
+
 const coolZones = [
-    {x: 40,  y: 560, w: 90,  h: 40},
-    {x: 250, y: 470, w: 70,  h: 60},
-    {x: 40,  y: 260, w: 70,  h: 70},
-    {x: 240, y: 120, w: 80,  h: 50},
+    // Start Area
+    {x: 100, y: 560, w: 160, h: 60},
+
+    // Safe Turn Left
+    {x: 220, y: 390, w: 80, h: 50},
+
+    // Safe Turn Right
+    {x: 60,  y: 290, w: 80, h: 50},
+
+    // Goal Approach
+    {x: 120, y: 40,  w: 120, h: 100},
 ];
+
 const roughZones = [
-    {x: 140, y: 560, w: 200, h: 40},
-    {x: 40,  y: 410, w: 280, h: 35},
-    {x: 40,  y: 220, w: 280, h: 35},
+    // Rough patches on the edges of the slalom
+    {x: 210, y: 360, w: 150, h: 20},
+    {x: 0,   y: 300, w: 150, h: 20},
 ];
 
 const HUD_H = 90;
@@ -89,24 +104,37 @@ let input = {
 // Setup Canvas
 function resize() {
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = WIDTH * dpr;
-    canvas.height = HEIGHT * dpr;
-    ctx.scale(dpr, dpr);
+    // Fix layout size first
+    let cw = window.innerWidth;
+    let ch = window.innerHeight;
+
+    // Constrain aspect ratio if needed, or just fit
+    // We want to fit the logic 360x640 into the screen.
+    // CSS handles object-fit, but we need the internal resolution to match dpr.
+
+    canvas.width = 360 * dpr;
+    canvas.height = 640 * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // Reset and scale
+
+    // Note: The logic assumes 360x640.
+    // We don't change internal logic size, CSS scales it.
 }
 window.addEventListener('resize', resize);
-resize();
+// Initial delay to ensure size is correct on mobile load
+setTimeout(resize, 100);
 
 // Input Handlers
 function handleOrientation(event) {
     if (input.useFallback) return;
-    input.gamma = event.gamma || 0;
-    input.beta = event.beta || 0;
+    // Some browsers return null
+    if (event.gamma === null || event.beta === null) return;
+    input.gamma = event.gamma;
+    input.beta = event.beta;
 }
 
 function initFallback() {
     input.useFallback = true;
     fallbackControls.style.display = 'flex';
-    pcWarning.style.display = 'block';
 
     const btns = document.querySelectorAll('.dpad-btn');
     btns.forEach(btn => {
@@ -145,6 +173,7 @@ startBtn.addEventListener('click', () => {
                     window.addEventListener('deviceorientation', handleOrientation);
                     startGame();
                 } else {
+                    alert("センサー許可が拒否されました。ボタンモードで開始します。");
                     initFallback();
                     startGame();
                 }
@@ -155,21 +184,34 @@ startBtn.addEventListener('click', () => {
                 startGame();
             });
     } else {
-        // Non-iOS
-        window.addEventListener('deviceorientation', handleOrientation);
+        // Non-iOS or Android Chrome
+        if (window.DeviceOrientationEvent) {
+             window.addEventListener('deviceorientation', handleOrientation);
+        }
         startGame();
 
-        // Sensor check
+        // Sensor check watchdog
         setTimeout(() => {
+            // If after 1 second, values are still exactly 0, prompts user or just enables buttons
             if (input.gamma === 0 && input.beta === 0) {
-                 initFallback();
+                 // Don't auto-switch force, but show controls just in case?
+                 // Let's rely on the user choosing button mode if it doesn't work,
+                 // or we can auto-show them.
+                 // For now, let's auto-enable fallback if we suspect it failed.
+                 // initFallback();
             }
-        }, 800);
+        }, 1000);
     }
 });
 
+btnModeBtn.addEventListener('click', () => {
+    initFallback();
+    startGame();
+});
+
+
 function resetGame() {
-    player.x = 60;
+    player.x = 180;
     player.y = 580;
     player.vx = 0;
     player.vy = 0;
@@ -188,6 +230,7 @@ function resetGame() {
 function startGame() {
     startScreen.style.display = 'none';
     gameOverScreen.style.display = 'none';
+    resize(); // Force resize on start
     resetGame();
     gameState = 'PLAY';
     lastTime = performance.now();

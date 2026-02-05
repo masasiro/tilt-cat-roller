@@ -3,38 +3,45 @@
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
-body {
+html, body {
     margin: 0;
     padding: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     background-color: #222;
     color: white;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     touch-action: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: fixed; /* Prevent scrolling bounce on iOS */
 }
 
 #game-container {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
     width: 100%;
     height: 100%;
     max-width: 500px; /* Simulate mobile width on desktop */
     background: #000;
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
 }
 
 canvas {
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Keep 9:16 aspect ratio visually */
+    flex-grow: 1;
+    object-fit: contain; /* Keep aspect ratio visually if needed, though we scale manually */
     background: #333; /* Fallback bg */
 }
 
@@ -124,22 +131,30 @@ canvas {
 }
 
 .overlay h1 {
-    font-size: 36px;
-    margin-bottom: 15px;
+    font-size: 32px;
+    margin-bottom: 10px;
     color: #ffcc00;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
 .overlay p {
-    font-size: 16px;
-    margin-bottom: 25px;
-    line-height: 1.6;
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.5;
     color: #ddd;
-    max-width: 80%;
+    max-width: 90%;
 }
 
-#start-btn, #go-restart-btn {
+.btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    align-items: center;
+}
+
+button.primary-btn {
     padding: 15px 30px;
     font-size: 18px;
     background: #ffcc00;
@@ -150,9 +165,24 @@ canvas {
     font-weight: bold;
     box-shadow: 0 4px 0 #c29b00;
     transition: transform 0.1s, box-shadow 0.1s;
+    width: 80%;
+    max-width: 300px;
 }
 
-#start-btn:active, #go-restart-btn:active {
+button.secondary-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #444;
+    color: #fff;
+    border: 2px solid #666;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 80%;
+    max-width: 300px;
+}
+
+button:active {
     transform: translateY(4px);
     box-shadow: none;
 }
@@ -184,18 +214,15 @@ canvas {
 /* Fallback Controls */
 #fallback-controls {
     position: absolute;
-    bottom: 30px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 15;
     display: flex;
     flex-direction: column;
     align-items: center;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-#fallback-controls:active {
-    opacity: 1;
+    opacity: 0.8;
+    pointer-events: none; /* Buttons inside are auto */
 }
 
 .dpad-row {
@@ -203,22 +230,21 @@ canvas {
 }
 
 .dpad-btn {
-    width: 65px;
-    height: 65px;
+    pointer-events: auto;
+    width: 60px;
+    height: 60px;
     margin: 5px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.7);
     border-radius: 50%;
     color: white;
-    font-size: 30px;
+    font-size: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
 }
 .dpad-btn:active {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.5);
 }

@@ -27,18 +27,25 @@
         <!-- Overlays -->
         <div id="start-screen" class="overlay">
             <h1>Tilt Cat Roller</h1>
-            <p>スマホを傾けてネコを転がせ！</p>
-            <p style="font-size: 0.8rem; color: #eee; margin-bottom: 20px;">走り続けると目が回るよ。<br>たまに止まって回復しよう。</p>
-            <button id="start-btn">センサーを有効化してスタート</button>
-            <div id="pc-warning" style="display:none; font-size: 0.8em; margin-top: 15px; color: #ffeb3b;">
-                センサー検出不可<br>画面下のボタンで操作します
+            <p>スマホを傾けてネコを転がせ！<br>
+            走りすぎると目が回るよ。<br>
+            ゴールを目指そう。</p>
+
+            <div class="btn-group">
+                <button id="start-btn" class="primary-btn">センサーでスタート</button>
+                <button id="btn-mode-btn" class="secondary-btn">ボタンで遊ぶ</button>
             </div>
+
+            <p style="font-size: 0.75rem; margin-top: 20px; color: #888;">
+                ※iOSはセンサー許可が必要です。<br>
+                ※PCや一部のAndroidはボタンモード推奨。
+            </p>
         </div>
 
         <div id="game-over-screen" class="overlay" style="display: none;">
             <h1 id="go-title">CLEAR!</h1>
             <p id="go-time">Time: 0.00s</p>
-            <button id="go-restart-btn">もう一度</button>
+            <button id="go-restart-btn" class="primary-btn">もう一度</button>
         </div>
 
         <!-- Popups -->
