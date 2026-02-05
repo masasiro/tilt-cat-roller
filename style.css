@@ -86,18 +86,17 @@ body {
 
 .game {
   position: relative;
-  flex: 1;
+  height: calc(100vh - var(--hud-height));
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
   background: var(--bg);
 }
 
 canvas {
-  width: 100%;
-  height: 100%;
+  width: min(100vw, calc((100vh - var(--hud-height)) * 0.5625));
+  height: calc(100vh - var(--hud-height));
   max-width: 540px;
-  max-height: calc(100vh - var(--hud-height));
   background: #fef9f2;
   display: block;
 }
