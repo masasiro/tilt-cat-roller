@@ -100,6 +100,8 @@ let lastTime = 0;
 
 function resizeCanvas() {
   dpr = window.devicePixelRatio || 1;
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
   canvas.width = LOGICAL_W * dpr;
   canvas.height = LOGICAL_H * dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

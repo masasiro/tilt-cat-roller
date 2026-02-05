@@ -17,7 +17,7 @@ body {
   margin: 0;
   font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
   background: var(--bg);
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   overflow: hidden;
   touch-action: none;
   display: flex;
@@ -86,7 +86,7 @@ body {
 
 .game {
   position: relative;
-  height: calc(100vh - var(--hud-height));
+  height: calc(var(--vh, 1vh) * 100 - var(--hud-height));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,8 +94,8 @@ body {
 }
 
 canvas {
-  width: min(100vw, calc((100vh - var(--hud-height)) * 0.5625));
-  height: calc(100vh - var(--hud-height));
+  width: min(100vw, calc((var(--vh, 1vh) * 100 - var(--hud-height)) * 0.5625));
+  height: calc(var(--vh, 1vh) * 100 - var(--hud-height));
   max-width: 540px;
   background: #fef9f2;
   display: block;
