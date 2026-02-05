@@ -1,0 +1,224 @@
+* {
+    box-sizing: border-box;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #222;
+    color: white;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    touch-action: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 500px; /* Simulate mobile width on desktop */
+    background: #000;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Keep 9:16 aspect ratio visually */
+    background: #333; /* Fallback bg */
+}
+
+/* HUD */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 90px; /* Matches HUD_H */
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 15px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+#hud-row1 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-shadow: 1px 1px 2px black;
+}
+
+#dizzy-bar-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#dizzy-label {
+    width: 60px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ddd;
+}
+
+#dizzy-bar-bg {
+    flex-grow: 1;
+    height: 12px;
+    background: #555;
+    border: 2px solid #333;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+#dizzy-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(to right, #00ff00, #ffff00, #ff0000);
+    transition: width 0.1s linear;
+}
+
+#restart-btn {
+    pointer-events: auto;
+    background: #555;
+    color: white;
+    border: 1px solid #888;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    position: absolute;
+    right: 15px;
+    top: 45px;
+}
+#restart-btn:active {
+    background: #777;
+}
+
+/* Overlays */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    text-align: center;
+    padding: 20px;
+}
+
+.overlay h1 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    color: #ffcc00;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.overlay p {
+    font-size: 16px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    color: #ddd;
+    max-width: 80%;
+}
+
+#start-btn, #go-restart-btn {
+    padding: 15px 30px;
+    font-size: 18px;
+    background: #ffcc00;
+    color: #333;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 0 #c29b00;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+#start-btn:active, #go-restart-btn:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+
+/* Popups */
+#dizzy-popup {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 50, 50, 0.9);
+    color: white;
+    padding: 20px 40px;
+    font-size: 28px;
+    font-weight: bold;
+    border-radius: 15px;
+    border: 3px solid white;
+    pointer-events: none;
+    z-index: 15;
+    animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    white-space: nowrap;
+}
+
+@keyframes pop {
+    from { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* Fallback Controls */
+#fallback-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 15;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+#fallback-controls:active {
+    opacity: 1;
+}
+
+.dpad-row {
+    display: flex;
+}
+
+.dpad-btn {
+    width: 65px;
+    height: 65px;
+    margin: 5px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    color: white;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+.dpad-btn:active {
+    background: rgba(255, 255, 255, 0.4);
+}

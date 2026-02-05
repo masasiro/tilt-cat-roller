@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Tilt Cat Roller</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- HUD -->
+        <div id="hud">
+            <div id="hud-row1">
+                <span id="time-display">TIME: 0.00</span>
+                <span id="state-display">STAND</span>
+            </div>
+            <div id="dizzy-bar-container">
+                <div id="dizzy-label">DIZZY</div>
+                <div id="dizzy-bar-bg"><div id="dizzy-bar-fill"></div></div>
+            </div>
+            <button id="restart-btn">RESTART</button>
+        </div>
+
+        <!-- Canvas -->
+        <canvas id="game-canvas" width="360" height="640"></canvas>
+
+        <!-- Overlays -->
+        <div id="start-screen" class="overlay">
+            <h1>Tilt Cat Roller</h1>
+            <p>スマホを傾けてネコを転がせ！</p>
+            <p style="font-size: 0.8rem; color: #eee; margin-bottom: 20px;">走り続けると目が回るよ。<br>たまに止まって回復しよう。</p>
+            <button id="start-btn">センサーを有効化してスタート</button>
+            <div id="pc-warning" style="display:none; font-size: 0.8em; margin-top: 15px; color: #ffeb3b;">
+                センサー検出不可<br>画面下のボタンで操作します
+            </div>
+        </div>
+
+        <div id="game-over-screen" class="overlay" style="display: none;">
+            <h1 id="go-title">CLEAR!</h1>
+            <p id="go-time">Time: 0.00s</p>
+            <button id="go-restart-btn">もう一度</button>
+        </div>
+
+        <!-- Popups -->
+        <div id="dizzy-popup" style="display: none;">目が回った！</div>
+
+        <!-- Fallback Controls (Virtual D-pad) -->
+        <div id="fallback-controls" style="display: none;">
+            <div class="dpad-row">
+                <button id="btn-up" class="dpad-btn" data-dir="up">▲</button>
+            </div>
+            <div class="dpad-row">
+                <button id="btn-left" class="dpad-btn" data-dir="left">◀</button>
+                <button id="btn-down" class="dpad-btn" data-dir="down">▼</button>
+                <button id="btn-right" class="dpad-btn" data-dir="right">▶</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
